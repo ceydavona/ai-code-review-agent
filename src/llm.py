@@ -38,14 +38,17 @@ class Brain(ABC):
 class RuleBasedBrain(Brain):
     """Free brain without any model: follows a fixed plan in order."""
 
-    _PLAN = (
+    _DEFAULT_PLAN = (
         ToolName.SECURITY_SCAN,
         ToolName.RUN_TESTS,
         ToolName.WRITE_REPORT,
     )
 
+    def __init__(self, plan: tuple[ToolName, ...] = _DEFAULT_PLAN) -> None:
+        self._plan = plan
+
     def decide(self, completed: tuple[ToolName, ...]) -> Action:
-        for tool in self._PLAN:
+        for tool in self._plan:
             if tool not in completed:
                 return Action(tool)
         return Action(ToolName.FINISH)
